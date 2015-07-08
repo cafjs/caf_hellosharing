@@ -1,7 +1,7 @@
 {
     "name": "top",
     "env" : {
-        "publicHostname" : "process.env.publicHostname||root-hellosharing.vcap.me"
+        "publicHostname" : "process.env.publicHostname||root-hellosharing.cafjs.com"
     },
     "components": [
         {
@@ -22,7 +22,7 @@
                 "appPublisher" : "root",
                 "appLocalName" : "hellosharing",
                 "allowNobodyUser" : false,
-                "accountsURL": "http://root-accounts.vcap.me"
+                "accountsURL": "process.env.ACCOUNTS_URL||https://root-accounts.cafjs.com"
             }
         },
         {
@@ -34,10 +34,11 @@
             "description" : "Checkpointing service",
             "env" : {
                "nodeId": "default",
+                "paas" : "redis",
                "redis" : {
                    "password" : null,
-                   "hostname" : "localhost",
-                   "port" : 6379
+                   "port" : "process.env.REDIS_PORT_6379_TCP_PORT||6379",
+                   "hostname" : "process.env.REDIS_PORT_6379_TCP_ADDR||localhost"
                 },
                 "coalescing" : {
                     "interval" : 10,

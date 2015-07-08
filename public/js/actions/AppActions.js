@@ -40,20 +40,19 @@ var wsStatusF =  function(isClosed) {
 };
 
 var AppActions = {
-    init: function(initialData) {
-        if (typeof window === 'undefined') {
-            // server side rendering
-            updateF(initialData);
-        } else {
-            AppSession.hello(AppSession.getCacheKey(),
-                             function(err, data) {
-                                 if (err) {
-                                     errorF(err);
-                                 } else {
-                                     updateF(data);
-                                 }
-                             });
-        }
+    initServer: function(initialData) {
+        updateF(initialData);
+    },
+    init: function(cb) {
+        AppSession.hello(AppSession.getCacheKey(),
+                         function(err, data) {
+                             if (err) {
+                                 errorF(err);
+                             } else {
+                                 updateF(data);
+                             }
+                             cb(err, data);
+                         });
     },
     getRemoteState: function(version) {
         AppSession.getState(version, function(err, data) {
