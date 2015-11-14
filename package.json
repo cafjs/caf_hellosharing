@@ -1,7 +1,7 @@
 {
   "name": "caf_hellosharing",
   "description": "Cloud Assistants Sharing Actors example",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Antonio Lain <antlai@cafjs.com>",
   "dependencies": {
       "caf_react" :"^0.2.0",
@@ -10,8 +10,9 @@
       "caf_security": "^0.2.0",
       "caf_transport": "^0.2.0",
       "caf_cli": "^0.2.0",
-      "react" : "^0.13.0",
-      "react-bootstrap" : "^0.20.3",
+      "react" : "^0.14.0",
+      "react-dom" : "^0.14.0",
+      "react-bootstrap" : "^0.27.3",
       "flux": "^2.0.2",
       "keymirror": "^0.1.0",
       "eventemitter2" : "^0.4.14"

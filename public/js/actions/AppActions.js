@@ -65,6 +65,9 @@ var AppActions = {
     },
     setLocalAnswer: function(answer) {
         updateF({state : {localAnswer: answer}});
+    },
+    resetError: function() {
+        errorF(null);
     }
 };
 
