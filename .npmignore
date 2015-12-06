@@ -1,4 +1,6 @@
 test
 .npmignore
 .gitmodules
-.git
+coverage
+build.js
+build.min.js
