@@ -3,10 +3,9 @@ var rB = require('react-bootstrap');
 var cE = React.createElement;
 
 var prettyPrintFun = function(x) {
-    if (typeof x === 'string') {
-        var res = x.split('#').slice(2).join('');
-        res = res.replace('{','{\n    ');
-        res = res.replace('}','\n}');
+    if (x && (typeof x === 'object') && (typeof x.type === 'string')) {
+        var res = 'function(' + x.args.join(',') + ') {\n    ' +
+                x.body + '\n}';
         return cE('pre', null, cE('code', null, res));
     } else {
         return x;
