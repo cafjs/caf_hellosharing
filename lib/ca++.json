@@ -8,7 +8,7 @@
             "env" : {
                 "maxRetries" : "$._.env.maxRetries",
                 "retryDelay" : "$._.env.retryDelay",
-                "coinPlayTime" : 900
+                "coinPlayTime" : "process.env.COIN_PLAY_TIME||900"
             },
             "components" : [
                 {

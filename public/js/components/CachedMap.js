@@ -22,7 +22,7 @@ var CachedMap = {
 
     render: function() {
         this.oldMap = this.props.map && this.props.map.toImmutableObject();
-        var map = this.oldMap || {};
+        var map = (this.oldMap  && this.oldMap.toObject()) || {};
         return cE(rB.Table, {striped: true, responsive: true, bordered: true,
                              condensed: true, hover: true},
                   cE('thead', null,
@@ -34,19 +34,19 @@ var CachedMap = {
                   cE('tbody', null,
                      cE('tr', null,
                         cE('td', null, '__ca_version__'),
-                        cE('td', null, map.get('__ca_version__'))
+                        cE('td', null, map.__ca_version__)
                        ),
                      cE('tr', null,
                         cE('td', null, 'f'),
-                        cE('td', null, prettyPrintFun(map.get('f')))
+                        cE('td', null, prettyPrintFun(map.f))
                        ),
                      cE('tr', null,
                         cE('td', null, 'fInv'),
-                        cE('td', null, prettyPrintFun(map.get('fInv')))
+                        cE('td', null, prettyPrintFun(map.fInv))
                        ),
                      cE('tr', null,
                         cE('td', null, 'rand'),
-                        cE('td', null, map.get('rand'))
+                        cE('td', null, map.rand)
                        )
                     )
                  );

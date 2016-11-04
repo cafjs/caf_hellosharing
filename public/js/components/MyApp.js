@@ -1,6 +1,5 @@
 var React = require('react');
 var rB = require('react-bootstrap');
-var AppStore = require('../stores/AppStore');
 var AppActions = require('../actions/AppActions');
 var AppStatus = require('./AppStatus');
 var NewError = require('./NewError');
@@ -10,60 +9,67 @@ var cE = React.createElement;
 
 var MyApp = {
     getInitialState: function() {
-        return AppStore.getState();
+        return this.props.ctx.store.getState();
     },
     componentDidMount: function() {
-        AppStore.addChangeListener(this._onChange);
+        if (!this.unsubscribe) {
+            this.unsubscribe = this.props.ctx.store
+                .subscribe(this._onChange.bind(this));
+            this._onChange();
+        }
     },
     componentWillUnmount: function() {
-        AppStore.removeChangeListener(this._onChange);
+        if (this.unsubscribe) {
+            this.unsubscribe();
+            this.unsubscribe = null;
+        }
     },
-    _onChange : function(ev) {
-        this.setState(AppStore.getState());
-    },
-    doRefresh : function(ev) {
-        ev.stopPropagation();
-        var current = this.state.map && this.state.map.getVersion();
-        AppActions.getRemoteState(current);
+    _onChange : function() {
+        if (this.unsubscribe) {
+            this.setState(this.props.ctx.store.getState());
+        }
     },
     doCompute : function(ev) {
-        ev.stopPropagation();
         if (this.state.map) {
             var answer = 42;
             var ref = this.state.map.ref();
             answer = ref.applyMethod('f',[answer]);
             answer = ref.applyMethod('fInv',[answer]);
-            AppActions.setLocalAnswer(answer);
+            AppActions.setLocalState(this.props.ctx, {localAnswer: answer});
         }
     },
     render: function() {
         return cE("div", {className: "container-fluid"},
-                  cE(NewError, {error: this.state.error}),
-                  cE(rB.Panel, {header: cE(rB.Grid, {fluid: true},
-                                           cE(rB.Row, null,
-                                              cE(rB.Col, {sm:1, xs:1},
-                                                 cE(AppStatus, {
-                                                        isClosed:
-                                                        this.state.isClosed
-                                                    })
-                                                ),
-                                              cE(rB.Col, {
-                                                     sm: 5,
-                                                     xs:10,
-                                                     className: 'text-right'
-                                                 },
-                                                 "Sharing Actors Example"
-                                                ),
-                                              cE(rB.Col, {
-                                                     sm: 5,
-                                                     xs:11,
-                                                     className: 'text-right'
-                                                 },
-                                                 this.state.fullName
-                                                )
-                                             )
-                                          )
-                               },
+                  cE(NewError, {
+                      ctx: this.props.ctx,
+                      error: this.state.error
+                  }),
+                  cE(rB.Panel, {
+                      header: cE(rB.Grid, {fluid: true},
+                                 cE(rB.Row, null,
+                                    cE(rB.Col, {sm:1, xs:1},
+                                       cE(AppStatus, {
+                                           isClosed:
+                                           this.state.isClosed
+                                       })
+                                      ),
+                                    cE(rB.Col, {
+                                        sm: 5,
+                                        xs:10,
+                                        className: 'text-right'
+                                    },
+                                       "Sharing Actors Example"
+                                      ),
+                                    cE(rB.Col, {
+                                        sm: 5,
+                                        xs:11,
+                                        className: 'text-right'
+                                    },
+                                       this.state.fullName
+                                      )
+                                   )
+                                )
+                  },
                      cE(rB.Panel, {header: "Answer to the Ultimate Question"},
                         cE(rB.Grid, {fluid: true},
                            cE(rB.Row, null,
@@ -91,7 +97,7 @@ var MyApp = {
                           )
                        ),
                      cE(rB.Panel, {header: "Locally Cached Map"},
-                        cE(CachedMap, {map :this.state.map}),
+                        cE(CachedMap, {map: this.state.map}),
                         cE(rB.Grid, {fluid: true},
                            cE(rB.Row, null,
                               cE(rB.Col, {xs:12, sm:6},

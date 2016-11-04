@@ -23,7 +23,7 @@
                 "appFileName" : "../public/index.html",
                 "separator" : "<section id=\"content\">",
                 "cacheService" : "cp",
-                "expiresInSec" : 60
+                "expiresInSec" : "process.env.EXPIRES_IN_SEC||60"
             }
         }
     ]

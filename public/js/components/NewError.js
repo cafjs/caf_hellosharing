@@ -6,7 +6,7 @@ var AppActions = require('../actions/AppActions');
 var NewError = {
 
     doDismissError: function(ev) {
-        AppActions.resetError();
+        AppActions.resetError(this.props.ctx);
     },
 
     render: function() {
