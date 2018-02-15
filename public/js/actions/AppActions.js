@@ -46,19 +46,15 @@ var AppActions = {
             cb(err, data);
         });
     },
-    getRemoteState: function(ctx) {
-        ctx.session.getState(ctx.map.getVersion(), function(err, data) {
-            if (err) {
-                errorF(ctx.store, err);
-            } else {
-                try {
-                    ctx.map.applyChanges(data.map);
-                    updateF(ctx.store, data.state, ctx.map);
-                } catch (ex) {
-                    errorF(ctx.store, ex);
-                }
-            }
-        });
+    getRemoteState: async function(ctx) {
+        try {
+            var data = await ctx.session.getState(ctx.map.getVersion())
+                    .getPromise();
+            ctx.map.applyChanges(data.map);
+            updateF(ctx.store, data.state, ctx.map);
+        } catch (ex) {
+            errorF(ctx.store, ex);
+        }
     },
     message:  function(ctx, msg) {
         var mapVersion = getNotifData(msg);
