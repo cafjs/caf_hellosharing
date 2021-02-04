@@ -6,7 +6,6 @@ const AppStatus = require('./AppStatus');
 const NewError = require('./NewError');
 const CachedMap = require('./CachedMap');
 const Answer = require('./Answer');
-const Compute = require('./Compute');
 
 const cE = React.createElement;
 
@@ -77,7 +76,9 @@ class MyApp extends React.Component {
                               cE(Answer, {
                                   ctx: this.props.ctx,
                                   theAnswer: this.state.theAnswer,
-                                  iterations: this.state.iterations
+                                  iterations: this.state.iterations,
+                                  localAnswer: this.state.localAnswer,
+                                  map: this.state.map
                               })
                              )
                           ),
@@ -87,18 +88,6 @@ class MyApp extends React.Component {
                              ),
                            cE(rB.Panel.Body, null,
                               cE(CachedMap, {map: this.state.map})
-                             )
-                          ),
-                        cE(rB.Panel, null,
-                           cE(rB.Panel.Heading, null,
-                              cE(rB.Panel.Title, null, 'Local Compute')
-                             ),
-                           cE(rB.Panel.Body, null,
-                              cE(Compute, {
-                                  ctx: this.props.ctx,
-                                  localAnswer: this.state.localAnswer,
-                                  map: this.state.map
-                              })
                              )
                           )
                        )

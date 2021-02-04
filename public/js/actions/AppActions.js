@@ -39,8 +39,15 @@ const AppActions = {
         try {
             const data = await ctx.session.hello(ctx.session.getCacheKey())
                   .getPromise();
-            data.map && ctx.map.applyChanges(data.map);
-            updateF(ctx.store, data.state, ctx.map);
+            if (data.map) {
+                ctx.map.applyChanges(data.map);
+                updateF(ctx.store, data.state, ctx.map);
+            } else {
+                const err = new Error(
+                    "Missing primary map, initialize the 'admin' CA first"
+                );
+                errorF(ctx.store, err);
+            }
         } catch (err) {
             errorF(ctx.store, err);
         }
@@ -48,9 +55,16 @@ const AppActions = {
     async getRemoteState(ctx) {
         try {
             const data = await ctx.session.getState(ctx.map.getVersion())
-                    .getPromise();
-            data.map && ctx.map.applyChanges(data.map);
-            updateF(ctx.store, data.state, ctx.map);
+                  .getPromise();
+            if (data.map) {
+                ctx.map.applyChanges(data.map);
+                updateF(ctx.store, data.state, ctx.map);
+            } else {
+                const err = new Error(
+                    "Missing primary map, initialize the 'admin' CA first"
+                );
+                errorF(ctx.store, err);
+            }
         } catch (ex) {
             errorF(ctx.store, ex);
         }
