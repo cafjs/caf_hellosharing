@@ -1,28 +1,34 @@
-var React = require('react');
-var rB = require('react-bootstrap');
-var cE = React.createElement;
+const React = require('react');
+const rB = require('react-bootstrap');
+const cE = React.createElement;
 
-var prettyPrintFun = function(x) {
+const prettyPrintFun = function(x) {
     if (x && (typeof x === 'object') && (typeof x.type === 'string')) {
-        var res = 'function(' + x.args.join(',') + ') {\n    ' +
+        const res = 'function(' + x.args.join(',') + ') {\n    ' +
                 x.body + '\n}';
         return cE('pre', null, cE('code', null, res));
     } else {
         return x;
     }
 };
-var CachedMap = {
 
-    oldMap: null,
+class CachedMap extends React.Component {
 
-    shouldComponentUpdate: function(nextProps, nextState) {
-        var newMap = nextProps.map && nextProps.map.toImmutableObject();
+    constructor(props) {
+        super(props);
+        this.oldMap = null;
+    }
+
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const newMap = nextProps.map && nextProps.map.toImmutableObject();
         return (this.oldMap !== newMap);
-    },
+    }
 
-    render: function() {
+    render() {
         this.oldMap = this.props.map && this.props.map.toImmutableObject();
-        var map = (this.oldMap  && this.oldMap.toObject()) || {};
+        const map = (this.oldMap  && this.oldMap.toObject()) || {};
+
         return cE(rB.Table, {striped: true, responsive: true, bordered: true,
                              condensed: true, hover: true},
                   cE('thead', null,
@@ -33,7 +39,7 @@ var CachedMap = {
                     ),
                   cE('tbody', null,
                      cE('tr', null,
-                        cE('td', null, '__ca_version__'),
+                        cE('td', null, 'version'),
                         cE('td', null, map.__ca_version__)
                        ),
                      cE('tr', null,
@@ -53,5 +59,4 @@ var CachedMap = {
     }
 };
 
-
-module.exports = React.createClass(CachedMap);
+module.exports = CachedMap;

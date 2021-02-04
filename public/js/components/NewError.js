@@ -1,34 +1,40 @@
-var React = require('react');
-var rB = require('react-bootstrap');
-var cE = React.createElement;
-var AppActions = require('../actions/AppActions');
+'use strict';
 
-var NewError = {
+const React = require('react');
+const rB = require('react-bootstrap');
+const cE = React.createElement;
+const AppActions = require('../actions/AppActions');
 
-    doDismissError: function(ev) {
+class NewError extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.doDismissError = this.doDismissError.bind(this);
+    }
+
+    doDismissError(ev) {
         AppActions.resetError(this.props.ctx);
-    },
+    }
 
-    render: function() {
-        return cE(rB.Modal,{show: this.props.error,
-                            onHide: this.doDismissError,
-                            animation: false},
+    render() {
+        return cE(rB.Modal, {show: !!this.props.error,
+                             onHide: this.doDismissError,
+                             animation: false},
                   cE(rB.Modal.Header, {
-                      className : "bg-warning text-warning",
+                      className : 'bg-warning text-warning',
                       closeButton: true},
-                     cE(rB.Modal.Title, null, "Error")
+                     cE(rB.Modal.Title, null, 'Error')
                     ),
                   cE(rB.ModalBody, null,
-                     cE('p', null, 'Message:',
-                        cE(rB.Alert, {bsStyle: 'danger'},
-                           this.props.error && this.props.error.message)
-                       )
+                     cE('p', null, 'Message:'),
+                     cE(rB.Alert, {bsStyle: 'danger'},
+                        this.props.error && this.props.error.message)
                     ),
                   cE(rB.Modal.Footer, null,
-                     cE(rB.Button, {onClick: this.doDismissError}, "Continue")
+                     cE(rB.Button, {onClick: this.doDismissError}, 'Continue')
                     )
                  );
     }
 };
 
-module.exports = React.createClass(NewError);
+module.exports = NewError;

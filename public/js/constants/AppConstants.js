@@ -1,4 +1,4 @@
-var keyMirror = require('keymirror');
+const keyMirror = require('keymirror');
 
 module.exports = keyMirror({
     APP_UPDATE: null,

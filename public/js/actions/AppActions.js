@@ -1,8 +1,8 @@
-var AppConstants = require('../constants/AppConstants');
-var json_rpc = require('caf_transport').json_rpc;
+const AppConstants = require('../constants/AppConstants');
+const json_rpc = require('caf_transport').json_rpc;
 
-var updateF = function(store, state, map) {
-    var d = {
+const updateF = function(store, state, map) {
+    const d = {
         type: AppConstants.APP_UPDATE,
         state: state,
         map: map
@@ -10,69 +10,68 @@ var updateF = function(store, state, map) {
     store.dispatch(d);
 };
 
-var errorF =  function(store, err) {
-    var d = {
+const errorF =  function(store, err) {
+    const d = {
         type: AppConstants.APP_ERROR,
         error: err
     };
     store.dispatch(d);
 };
 
-var getNotifData = function(msg) {
+const getNotifData = function(msg) {
     return json_rpc.getMethodArgs(msg)[0];
 };
 
-var wsStatusF =  function(store, isClosed) {
-    var d = {
+const wsStatusF =  function(store, isClosed) {
+    const d = {
         type: AppConstants.WS_STATUS,
         isClosed: isClosed
     };
     store.dispatch(d);
 };
 
-var AppActions = {
-    initServer: function(ctx, initialData) {
+const AppActions = {
+    initServer(ctx, initialData) {
         ctx.map.applyChanges(initialData.map);
         updateF(ctx.store, initialData.state, ctx.map);
     },
-    init: function(ctx, cb) {
-        ctx.session.hello(ctx.session.getCacheKey(), function(err, data) {
-            if (err) {
-                errorF(ctx.store, err);
-            } else {
-                ctx.map.applyChanges(data.map);
-                updateF(ctx.store, data.state, ctx.map);
-            }
-            cb(err, data);
-        });
-    },
-    getRemoteState: async function(ctx) {
+    async init(ctx) {
         try {
-            var data = await ctx.session.getState(ctx.map.getVersion())
+            const data = await ctx.session.hello(ctx.session.getCacheKey())
+                  .getPromise();
+            data.map && ctx.map.applyChanges(data.map);
+            updateF(ctx.store, data.state, ctx.map);
+        } catch (err) {
+            errorF(ctx.store, err);
+        }
+    },
+    async getRemoteState(ctx) {
+        try {
+            const data = await ctx.session.getState(ctx.map.getVersion())
                     .getPromise();
-            ctx.map.applyChanges(data.map);
+            data.map && ctx.map.applyChanges(data.map);
             updateF(ctx.store, data.state, ctx.map);
         } catch (ex) {
             errorF(ctx.store, ex);
         }
     },
-    message:  function(ctx, msg) {
-        var mapVersion = getNotifData(msg);
+    message(ctx, msg) {
+        const mapVersion = getNotifData(msg);
         if (mapVersion >= ctx.map.getVersion()) {
             AppActions.getRemoteState(ctx);
         }
     },
-    closing:  function(ctx, err) {
+    closing(ctx, err) {
         console.log('Closing:' + JSON.stringify(err));
         wsStatusF(ctx.store, true);
     },
-    setLocalState: function(ctx, data) {
+    setLocalState(ctx, data) {
         updateF(ctx.store, data);
     },
-    resetError: function(ctx) {
+    resetError(ctx) {
         errorF(ctx.store, null);
     },
-    setError: function(ctx, err) {
+    setError(ctx, err) {
         errorF(ctx.store, err);
     }
 };
